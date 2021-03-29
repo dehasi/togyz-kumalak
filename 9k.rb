@@ -32,15 +32,22 @@ class Position
 
   private def step1(desk, start)
     #TODO: add kumalaks to kazan
-    i = start
-    kumalaks = desk[i]
+    kumalaks = desk[start]
+    desk[start] = 0
     if kumalaks == 1
-        nxt = (i+1)/desk.size()
-        desk[nxt] = desk[nxt] + 1
-        return desk, 0, 0
-    else 
-        return desk, 0, 0
+      nxt = (start + 1) /desk.size()
+      desk[nxt] = desk[nxt] + 1
+      return desk, 0, 0
     end
+    
+    i = start
+    while kumalaks > 0
+      nxt = i % DESK
+      desk[nxt] = desk[nxt] + 1
+      i = i + 1
+      kumalaks = kumalaks - 1
+    end
+    return desk, 0, 0
   end
 
   def can_step(desk, start)
