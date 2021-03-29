@@ -2,15 +2,10 @@
 #TODO: Add tuzdyk logic
 
 class Position
-  #attr_reader :name, :age
+  attr_reader :player1, :kazan1, :player2, :kazan2
+  
   HALF = 9
   DESK = 18
-
-  #def initialize()
-  #  @kazan1 = @kazan2 = 0
-  #  @player1 = Array.new(9,9)
-  #  @player2 = Array.new(9,9)
-  #end
   
   def initialize(player1=Array.new(9,9), kazan1=0, player2=Array.new(9,9), kazan2=0)
     @kazan1 = kazan1
@@ -22,11 +17,13 @@ class Position
   def step(player, from)
     #TODO: check if can step
     if player == 1
-      d,k1,k2 = step1(@player1 + @player2, from - 1) 
-      return Position.new(d[0, HALF], k1, d[HALF, DESK], k2)
+      d, k1 = step1(@player1 + @player2, from - 1) 
+      return Position.new(d[0, HALF], @kazan1 + k1, d[HALF, DESK], @kazan2)
     else
-      d,k2,k1 = step1(@player2 + @player1, from - 1) 
-      return Position.new(d[HALF, DESK], k2, d[0, HALF], k1)
+      # puts "DEBUG #{@player2 + @player1}"
+      d, k2  = step1(@player2 + @player1, from - 1) 
+      # puts "DEBUG #{d}"
+      return Position.new(d[HALF, DESK], @kazan1, d[0, HALF], @kazan2 + k2)
     end
   end
 
@@ -35,9 +32,9 @@ class Position
     kumalaks = desk[start]
     desk[start] = 0
     if kumalaks == 1
-      nxt = (start + 1) /desk.size()
+      nxt = (start + 1) % desk.size()
       desk[nxt] = desk[nxt] + 1
-      return desk, 0, 0
+      return desk, 0
     end
     
     i = start
@@ -47,15 +44,15 @@ class Position
       i = i + 1
       kumalaks = kumalaks - 1
     end
-    return desk, 0, 0
+    return desk, 0
   end
 
   def can_step(desk, start)
 	if start < 0 or start > 8 
-        return false
+      return false
     end
     if desk[start] == 'x' or desk[start] == 0
-        return false
+      return false
     end
     return true
   end
@@ -66,8 +63,6 @@ class Position
     puts "P1:#{@player1}"
   end
 end
-
-
 
 def finish(desk, point)
     if point <= HALF
@@ -80,14 +75,16 @@ def finish(desk, point)
     end 
 end
 
-#player = 1
-#print "p#{player}: "
-#step = gets.chomp.to_i
-#puts can_step(player1 + player2, step-1)
-#puts "step #{step} ->"
-position =  Position.new
 puts "Togyz Kumalak!"
+
+position = Position.new
 puts position.to_s
-puts "step 5 -> "
-puts position.step(1, 5).to_s
+puts "p1: step 5 -> 4"
+position =  position.step(1, 5)
+puts position.to_s
+
+
+puts "p2: step 1 -> 9"
+position =  position.step(2, 1)
+puts position.to_s
 
