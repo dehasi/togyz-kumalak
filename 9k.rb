@@ -6,13 +6,13 @@ class Position
   HALF = 9
   DESK = 18
 
-  def initialize()
-    @kazan1 = @kazan2 = 0
-    @player1 = Array.new(9,9)
-    @player2 = Array.new(9,9)
-  end
+  #def initialize()
+  #  @kazan1 = @kazan2 = 0
+  #  @player1 = Array.new(9,9)
+  #  @player2 = Array.new(9,9)
+  #end
   
-  def initialize(player1, kazan1, player2, kazan2)
+  def initialize(player1=Array.new(9,9), kazan1=0, player2=Array.new(9,9), kazan2=0)
     @kazan1 = kazan1
     @player1 = player1
     @kazan2 = kazan2
@@ -22,25 +22,27 @@ class Position
   def step(player, from)
     #TODO: check if can step
     if player == 1
-      d,k1,k2 = step(@player1 + @player2, from - 1) 
-      return Position(d[0, HALF], k1, d[HALF, DESK], k2)
+      d,k1,k2 = step1(@player1 + @player2, from - 1) 
+      return Position.new(d[0, HALF], k1, d[HALF, DESK], k2)
     else
-      d,k2,k1 = step(@player2 + @player1, from - 1) 
-      return Position(d[HALF, DESK], k2, d[0, HALF], k1)
+      d,k2,k1 = step1(@player2 + @player1, from - 1) 
+      return Position.new(d[HALF, DESK], k2, d[0, HALF], k1)
     end
   end
 
-  private def step(desk, start)
+  private def step1(desk, start)
+    #TODO: add kumalaks to kazan
     i = start
-    s = desk[i]
-    if s == 1
+    kumalaks = desk[i]
+    if kumalaks == 1
         nxt = (i+1)/desk.size()
-        if desk[nxt] != 'x'
-            desk[nxt] = desk[nxt] + 1
-        end
+        desk[nxt] = desk[nxt] + 1
+        return desk, 0, 0
+    else 
+        return desk, 0, 0
     end
-    return desk
   end
+
   def can_step(desk, start)
 	if start < 0 or start > 8 
         return false
