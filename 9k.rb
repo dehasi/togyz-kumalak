@@ -17,11 +17,11 @@ class Position
   def step(player, from)
     #TODO: check if can step
     if player == 1
-      d, k1 = step1(@player1 + @player2, from - 1) 
+      d, k1 = step1(@player1 + @player2, from) 
       return Position.new(d[0, HALF], @kazan1 + k1, d[HALF, DESK], @kazan2)
     else
       # puts "DEBUG #{@player2 + @player1}"
-      d, k2  = step1(@player2 + @player1, from - 1) 
+      d, k2  = step1(@player2 + @player1, from) 
       # puts "DEBUG #{d}"
       return Position.new(d[HALF, DESK], @kazan1, d[0, HALF], @kazan2 + k2)
     end
@@ -57,34 +57,38 @@ class Position
     return true
   end
   
+  private def finish(desk, point)
+    if point <= HALF
+      return 0
+    else 
+      if desk[point]%2 == 0
+        return desk[point]
+        # else if desk[point] == 3 and no tuzdyk return tuzdyk
+      end 
+    end 
+  end
+
   def to_s
-    puts "P2:#{@player2.reverse()}"
-    puts "Kazan1: #{@kazan1}          Kazan2: #{@kazan2}"
-    puts "P1:#{@player1}"
+    return "{\n\"player1\": #{@player1}, \"kazan1\": #{@kazan1},\n\"player2\": #{@player2}, \"kazan2\": #{@kazan2}\n}"
   end
 end
 
-def finish(desk, point)
-    if point <= HALF
-        return 0
-    else 
-        if desk[point]%2 == 0
-            return desk[point]
-        # else if desk[point] == 3 and no tuzdyk return tuzdyk
-        end 
-    end 
+def render(position)
+  puts "P2:#{position.player2.reverse()}"
+  puts "Kazan1: #{position.kazan1}          Kazan2: #{position.kazan2}"
+  puts "P1:#{position.player1}"
 end
 
 puts "Togyz Kumalak!"
 
 position = Position.new
-puts position.to_s
-puts "p1: step 5 -> 4"
-position =  position.step(1, 5)
-puts position.to_s
+puts render(position)
 
+puts "p1: step 5 -> 4"
+position = position.step(1, 4)
+puts render(position)
 
 puts "p2: step 1 -> 9"
-position =  position.step(2, 1)
-puts position.to_s
+position =  position.step(2, 0)
+puts render(position)
 
