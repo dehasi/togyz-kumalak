@@ -14,4 +14,19 @@ describe Position do
       end
     end
   end
+
+  describe "step" do
+    context "if step is baily" do
+      it "all kumalaks go to kazan" do
+         position = Position.new
+
+         position = position.step(1, 4)
+
+         expect(position.kazan1).to eq(10)
+         expect(position.player1).to eq([9, 9, 9, 9, 1, 10, 10, 10, 10])
+         expect(position.player2).to eq([10, 10, 10, 0, 9, 9, 9, 9, 9])
+         expect(position.kazan2).to eq(0)
+      end
+    end
+  end
 end
