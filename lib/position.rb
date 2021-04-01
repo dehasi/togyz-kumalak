@@ -1,4 +1,4 @@
-#TODO: Add tuzdyk logic
+
 #TODO: Add atsyz logic
 #TODO: Check if somebody wins
 
@@ -39,7 +39,7 @@ class Position
 
     t_index = p1.find_index(TUZDYK)
     unless t_index.nil?
-      raise "Illegal state: both players have tuzdyk at #{t_index}" unless p2[t_index] == TUZDYK
+      raise "Illegal state: both players have tuzdyk at #{t_index}" unless p2[t_index] != TUZDYK
     end
   end
 
@@ -67,38 +67,76 @@ class Position
     kumalaks = desk[start]
     raise "Expected kumalaks > 0; but was #{kumalaks}" unless kumalaks > 0
     desk[start] = 0
+    to_my_kazan = to_opponent_kazan = 0
     if kumalaks == 1
       nxt = (start + 1) % desk.size
-      desk[nxt] = desk[nxt] + 1
-      return desk, 0, 0
+      if desk[nxt] == TUZDYK
+        if nxt < HALF
+          to_opponent_kazan = to_opponent_kazan + 1
+        else
+          to_my_kazan = to_my_kazan + 1
+        end
+      else
+        desk[nxt] = desk[nxt] + 1
+      end
+      return desk, to_my_kazan, to_opponent_kazan
     end
 
     i = start; nxt = -1
     while kumalaks > 0
       nxt = i % DESK
-      desk[nxt] = desk[nxt] + 1
+      if desk[nxt] == TUZDYK
+        if nxt < HALF
+          to_opponent_kazan = to_opponent_kazan + 1
+        else
+          to_my_kazan = to_my_kazan + 1
+        end
+      else
+        desk[nxt] = desk[nxt] + 1
+      end
       i = i + 1
       kumalaks = kumalaks - 1
     end
 
-    desk, k1 = take(desk, nxt)
+    desk, k = take(desk, nxt)
     # puts "DEBUG: desk #{desk} k1/2#{k1}, nxt #{nxt}"
-    [desk, k1, 0]
+    [desk, to_my_kazan + k, to_opponent_kazan]
   end
 
   private def take(desk, point)
     if point < HALF
-      [desk, 0]
+      return [desk, 0]
+    end
+    if desk[point] % 2 == 0
+      to_kazan = desk[point]
+      desk[point] = 0
+      return desk, to_kazan
     else
-      if desk[point] % 2 == 0
-        to_kazan = desk[point]
-        desk[point] = 0
+      if desk[point] == 3 and can_be_tuzdyk(desk, point)
+        desk[point] = TUZDYK
+        to_kazan = 3
         return desk, to_kazan
-        # else if desk[point] == 3 and no tuzdyk return tuzdyk
       else
         return desk, 0
       end
     end
+  end
+
+  private def can_be_tuzdyk(desk, point)
+    # can't be at my half and at the end
+    if point < HALF or point == 17
+      return false
+    end
+    # can't be more than one
+    if desk[HALF, DESK].select { |k| k == TUZDYK }.size > 0
+      return false
+    end
+    # can't be at the same index as opponent
+    opponent_tuzdyk = desk[0, HALF].find_index(TUZDYK)
+    unless opponent_tuzdyk.nil?
+      return point != (opponent_tuzdyk + HALF)
+    end
+    return true
   end
 
   def to_s
