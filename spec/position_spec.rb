@@ -1,4 +1,4 @@
-require "9k"
+require "position"
 
 describe Position do
 
@@ -27,6 +27,21 @@ describe Position do
          expect(position.player2).to eq([10, 10, 10, 0, 9, 9, 9, 9, 9])
          expect(position.kazan2).to eq(0)
       end
+
+      it "all kumalaks go to kazan2" do
+         position = Position.new([9, 9, 9, 9, 1, 10, 10, 10, 10], 10, [10, 10, 10, 0, 9, 9, 9, 9, 9], 0)
+
+         position = position.step(2, 0)
+
+         expect(position.kazan1).to eq(10)
+         expect(position.player1).to eq([0, 9, 9, 9, 1, 10, 10, 10, 10])
+         expect(position.player2).to eq([1, 11, 11, 1, 10, 10, 10, 10, 10])
+         expect(position.kazan2).to eq(10)
+      end
+#p1: step 5 -> 4
+#P2:[9, 9, 9, 9, 9, 0, 10, 10, 10]
+#Kazan1: 10          Kazan2: 0
+#P1:[9, 9, 9, 9, 1, 10, 10, 10, 10]
     end
   end
 end
