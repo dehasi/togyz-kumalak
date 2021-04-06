@@ -1,4 +1,3 @@
-
 #TODO: Add atsyz logic
 #TODO: Check if somebody wins
 
@@ -43,6 +42,18 @@ class Position
     end
   end
 
+  def result
+    if kazan1 > 81
+      return 1
+    end
+    if kazan2 > 81
+      return 2
+    end
+    if kazan1 == kazan2 and kazan2 == 81
+      return 0
+    end
+    -1
+  end
   def step(player, from)
     if player == 1
       assert_can_step(@player1, from)
@@ -50,9 +61,7 @@ class Position
       Position.new(d[0, HALF], @kazan1 + k1, d[HALF, DESK], @kazan2 + k2)
     else
       assert_can_step(@player2, from)
-      # puts "DEBUG #{@player2 + @player1}"
       d, k2, k1 = step1(@player2 + @player1, from)
-      # puts "DEBUG #{d}"
       Position.new(d[HALF, DESK], @kazan1 + k1, d[0, HALF], @kazan2 + k2)
     end
   end
@@ -72,12 +81,12 @@ class Position
       nxt = (start + 1) % desk.size
       if desk[nxt] == TUZDYK
         if nxt < HALF
-          to_opponent_kazan = to_opponent_kazan + 1
+          to_opponent_kazan += 1
         else
-          to_my_kazan = to_my_kazan + 1
+          to_my_kazan += 1
         end
       else
-        desk[nxt] = desk[nxt] + 1
+        desk[nxt] += 1
       end
       return desk, to_my_kazan, to_opponent_kazan
     end
@@ -87,15 +96,15 @@ class Position
       nxt = i % DESK
       if desk[nxt] == TUZDYK
         if nxt < HALF
-          to_opponent_kazan = to_opponent_kazan + 1
+          to_opponent_kazan += 1
         else
-          to_my_kazan = to_my_kazan + 1
+          to_my_kazan += 1
         end
       else
-        desk[nxt] = desk[nxt] + 1
+        desk[nxt] += 1
       end
       i = i + 1
-      kumalaks = kumalaks - 1
+      kumalaks -= 1
     end
 
     desk, k = take(desk, nxt)

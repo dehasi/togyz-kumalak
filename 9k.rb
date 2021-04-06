@@ -1,4 +1,7 @@
-require "./lib/position"
+#!/usr/bin/env ruby
+
+require_relative 'lib/position'
+require_relative 'lib/decision'
 
 def render(position)
   puts "P2:#{position.player2.reverse()}"
@@ -8,14 +11,42 @@ end
 
 puts "Togyz Kumalak!"
 
+decision = Decision.new
 position = Position.new
-puts render(position)
 
-puts "p1: step 5 -> 4"
-position = position.step(1, 4)
-puts render(position)
+while position.result < 0
+  puts render(position)
+  print "p1>"
+  input = gets.chomp
+  step = input.to_i - 1
+  position = position.step(1, step)
+  case position.result
+  when 1
+    puts "Player 1 won"
+    next
+  when 2
+    puts "Player 2 won"
+    next
+  when 0
+    puts "Draw"
+    next
+  end
 
-puts "p2: step 1 -> 9"
-position =  position.step(2, 0)
-puts render(position)
+  step = decision.decide(position, 2)
+  puts "p2>#{step + 1}"
+  position = position.step(2, step)
+
+  case position.result
+  when 1
+    puts "Player 1 won"
+    next
+  when 2
+    puts "Player 2 won"
+    next
+  when 0
+    puts "Draw"
+    next
+  end
+end
+
 
