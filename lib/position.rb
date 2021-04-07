@@ -1,13 +1,15 @@
 #TODO: Add atsyz logic
 #TODO: Check if somebody wins
 
-class Position
-  attr_reader :player1, :kazan1, :player2, :kazan2
-
+class GameConstant
   HALF = 9
   DESK = 18
   TUZDYK = 'x'
   KUMALAK_COUNT = 81 * 2
+end
+
+class Position < GameConstant
+  attr_reader :player1, :kazan1, :player2, :kazan2
 
   def initialize(player1 = Array.new(9, 9), kazan1 = 0, player2 = Array.new(9, 9), kazan2 = 0)
     assert_kumalaks_count(player1, kazan1, player2, kazan2)

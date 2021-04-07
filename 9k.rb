@@ -11,7 +11,8 @@ end
 
 puts "Togyz Kumalak!"
 
-decision = Decision.new
+decision = RandomDecision.new
+decision = MostProfitableStepDecision.new
 position = Position.new
 
 while position.result < 0
@@ -20,6 +21,7 @@ while position.result < 0
   input = gets.chomp
   step = input.to_i - 1
   position = position.step(1, step)
+  puts render(position)
   case position.result
   when 1
     puts "Player 1 won"
