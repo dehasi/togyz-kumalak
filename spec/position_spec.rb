@@ -41,6 +41,19 @@ describe Position do
         expect(position.player2).to eq([1, 11, 11, 1, 10, 10, 10, 10, 10])
         expect(position.kazan2).to eq(10)
       end
+
+      it "all kumalaks go to kazan (9->1)" do
+        position = Position.new(
+          ["x", 0, 2, 4, 0, 0, 1, 0, 1], 76,
+          [1, 1, 2, "x", 2, 2, 2, 1 ,0], 67) # [0, 1, 2, 2, 2, "x", 2, 1, 1]
+
+        position = position.step(1, 8)
+
+        expect(position.kazan1).to eq(78)
+        expect(position.player1).to eq(["x", 0, 2, 4, 0, 0, 1, 0, 0])
+        expect(position.player2).to eq([0, 1, 2, "x", 2, 2, 2, 1 ,0])
+        expect(position.kazan2).to eq(67)
+      end
     end
   end
 
@@ -145,3 +158,17 @@ describe Position do
     end
   end
 end
+
+#TODO:
+# test cases
+# p2>1
+# P2:[0, 1, 2, 2, 2, "x", 2, 1, 1]
+# Kazan1: 76          Kazan2: 67
+# P1:["x", 0, 2, 4, 0, 0, 1, 0, 1]
+#
+# p1>9
+# P2:[0, 1, 2, 2, 2, "x", 2, 1, 2]
+# Kazan1: 76          Kazan2: 67
+# P1:["x", 0, 2, 4, 0, 0, 1, 0, 0]
+# ###########
+#

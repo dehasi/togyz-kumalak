@@ -56,6 +56,7 @@ class Position < GameConstant
     end
     -1
   end
+
   def step(player, from)
     if player == 1
       assert_can_step(@player1, from)
@@ -90,28 +91,28 @@ class Position < GameConstant
       else
         desk[nxt] += 1
       end
-      return desk, to_my_kazan, to_opponent_kazan
-    end
-
-    i = start; nxt = -1
-    while kumalaks > 0
-      nxt = i % DESK
-      if desk[nxt] == TUZDYK
-        if nxt < HALF
-          to_opponent_kazan += 1
+      desk, k = take(desk, nxt)
+      [desk, to_my_kazan + k, to_opponent_kazan]
+    else
+      i = start; nxt = -1
+      while kumalaks > 0
+        nxt = i % DESK
+        if desk[nxt] == TUZDYK
+          if nxt < HALF
+            to_opponent_kazan += 1
+          else
+            to_my_kazan += 1
+          end
         else
-          to_my_kazan += 1
+          desk[nxt] += 1
         end
-      else
-        desk[nxt] += 1
+        i = i + 1
+        kumalaks -= 1
       end
-      i = i + 1
-      kumalaks -= 1
-    end
 
-    desk, k = take(desk, nxt)
-    # puts "DEBUG: desk #{desk} k1/2#{k1}, nxt #{nxt}"
-    [desk, to_my_kazan + k, to_opponent_kazan]
+      desk, k = take(desk, nxt)
+      [desk, to_my_kazan + k, to_opponent_kazan]
+    end
   end
 
   private def take(desk, point)

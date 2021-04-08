@@ -36,14 +36,14 @@ class MostProfitableStepDecisionTest < Test::Unit::TestCase
     assert_equal(step, best_step, "Expected best step #{best_step} but was #{step}")
   end
 
-  def test_decision_two_equal_takes_first
+  def test_decision_two_equal_takes_random
     position = Position.new(
       [9, 0, 0, 0, 'x', 0, 9, 0, 9], 40,
       [10, 10, 10, 0, 9, 9, 9, 9, 9], 20)
-    first_best_step = 6
+    best_steps = [6, 8]
 
     step = @decision.decide(position, 1)
 
-    assert_equal(step, first_best_step, "Expected best step #{first_best_step} but was #{step}")
+    assert(best_steps.include?(step), "Expected #{best_steps} includes #{step}")
   end
 end

@@ -14,9 +14,9 @@ class Decision < GameConstant
 
   def half(player, position)
     if player == 1
-      return position.player1, position.kazan1
+      [position.player1, position.kazan1]
     else
-      return position.player2, position.kazan1
+      [position.player2, position.kazan2]
     end
   end
 end
@@ -34,21 +34,23 @@ class MostProfitableStepDecision < Decision
   def decide(position, player)
     half, _ = half(player, position)
     available = available(half)
-    #puts "DEBUG: available #{available} kazan #{kazan}"
-    best_step = available.first
-    _, best_kazan = half(position.step(player, best_step), position)
 
-    #puts "DEBUG: initially best step #{best_step} kazan #{best_kazan}"
-    available.each { |step|
+    best_steps = available.sample(1)
+    _, best_kazan = half(position.step(player, best_steps.first), position)
+
+    available.each do |step|
       _, k = half(player, position.step(player, step))
-      #puts "DEBUG: candidate step #{step} kazan #{k}"
       if k > best_kazan
-        best_step = step
+        best_steps = [step]
         best_kazan = k
-        #puts "DEBUG: take best step #{best_step} kazan #{best_kazan}"
+        next
       end
-    }
-    best_step
+      if k == best_kazan
+        best_steps << step
+        next
+      end
+    end
+    best_steps.sample(1).first
   end
 
   private
