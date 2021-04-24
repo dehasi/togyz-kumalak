@@ -4,50 +4,82 @@ require_relative 'lib/position'
 require_relative 'lib/decision'
 
 def render(position)
-  puts "P2:#{position.player2.reverse()}"
+  puts "P2:#{position.player2.reverse}"
   puts "Kazan1: #{position.kazan1}          Kazan2: #{position.kazan2}"
   puts "P1:#{position.player1}"
 end
 
 puts "Togyz Kumalak!"
+puts "type exit for exit"
+puts ""
 
-decision = RandomDecision.new
 decision = MostProfitableStepDecision.new
 position = Position.new
 
+def read_line(prompt)
+  print prompt
+  input = gets
+  input ||= ''
+  input.chomp
+end
+
+def read_step(position)
+  while true
+    input = read_line("p1>")
+    if input == 'exit'
+      puts "Bye"
+      exit(0)
+    end
+    step = input.to_i - 1
+    if step < 0 or step > 8
+      puts "Input should be a one number from 1 to 9"
+      next
+    end
+    case position.player1[step]
+    when nil?
+      puts "Input should be a one number from 1 to 9"
+      next
+    when 'x'
+      puts "It's the tuzdyk"
+      next
+    when 0
+      puts "No kumalaks"
+      next
+    else
+      return step
+    end
+  end
+end
+
+def opponent(player)
+  3 - player # 1 -> 2; 2 -> 1
+end
+
+player = 1
 while position.result < 0
   puts render(position)
-  print "p1>"
-  input = gets.chomp
-  step = input.to_i - 1
-  position = position.step(1, step)
-  puts render(position)
-  case position.result
-  when 1
-    puts "Player 1 won"
-    next
-  when 2
-    puts "Player 2 won"
-    next
-  when 0
-    puts "Draw"
-    next
+  if player == 1
+    step = read_step(position)
+  else
+    step = decision.decide(position, player)
+    puts "p2>#{step + 1}"
   end
-
-  step = decision.decide(position, 2)
-  puts "p2>#{step + 1}"
-  position = position.step(2, step)
+  position = position.step(player, step)
+  player = opponent(player)
 
   case position.result
   when 1
+    render(position)
     puts "Player 1 won"
-    next
+    exit(0)
   when 2
+    render(position)
     puts "Player 2 won"
-    next
+    exit(0)
   when 0
+    render(position)
     puts "Draw"
-    next
+    exit(0)
   end
 end
 

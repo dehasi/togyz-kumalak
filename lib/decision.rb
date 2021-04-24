@@ -52,10 +52,4 @@ class MostProfitableStepDecision < Decision
     end
     best_steps.sample(1).first
   end
-
-  private
-
-  def opponent(player)
-    3 - player # 1 -> 2; 2 -> 1
-  end
 end

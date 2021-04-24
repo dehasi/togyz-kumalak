@@ -70,9 +70,23 @@ class Position < GameConstant
   end
 
   def assert_can_step(desk, start)
-    raise "Illegal step index. Expected [0..8] but was #{start}" unless start >= 0 and start < HALF
-    raise "Illegal step index. Tuzdyk at index #{start}" unless desk[start] != TUZDYK
-    raise "Illegal step index. No kumalaks at index #{start}" unless desk[start] != 0
+    message = step_error_message(desk, start)
+    unless message.nil?
+      raise message
+    end
+  end
+
+  private def step_error_message(desk, start)
+    unless start >= 0 and start < HALF
+      return "Illegal step index. Expected [0..8] but was #{start}"
+    end
+    unless desk[start] != TUZDYK
+      return "Illegal step index. Tuzdyk at index #{start}"
+    end
+    unless desk[start] != 0
+      return "Illegal step index. No kumalaks at index #{start}"
+    end
+    nil
   end
 
   private def step1(desk, start)
